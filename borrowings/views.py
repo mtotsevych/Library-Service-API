@@ -64,6 +64,7 @@ class BorrowingReturnView(APIView):
 
     def post(self, request: Request, pk: int, *args, **kwargs) -> Response:
         borrowing = get_object_or_404(Borrowing, pk=pk)
+        self.check_object_permissions(request, borrowing)
 
         if not borrowing.actual_return_date:
             borrowing.actual_return_date = timezone.now().date()

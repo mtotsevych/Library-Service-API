@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 
 from django.db.models import QuerySet
 from rest_framework import generics, status

@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import (
 
 from users.views import UserCreateView, UserManageView
 
+app_name = "users"
+
 urlpatterns = [
     path("", UserCreateView.as_view(), name="register"),
     path("me", UserManageView.as_view(), name="me"),

@@ -37,7 +37,7 @@ services:
       - .env
     restart: always
     command: >
-      celery -A user worker --loglevel=INFO
+      celery -A borrowings worker --loglevel=INFO
     depends_on:
       - app
       - db
@@ -50,7 +50,7 @@ services:
       - .env
     restart: always
     command: >
-      celery -A user beat --loglevel=INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+      celery -A borrowings beat --loglevel=INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     depends_on:
       - app
       - db
@@ -64,7 +64,7 @@ services:
     ports:
       - "5555:5555"
     command: >
-      celery -A user flower --address=0.0.0.0 --port=5555
+      celery -A borrowings flower --address=0.0.0.0 --port=5555
     depends_on:
       - celery-worker
       - celery-beat

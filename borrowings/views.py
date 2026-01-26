@@ -1,6 +1,13 @@
 from django.utils import timezone
 
 from django.db.models import QuerySet
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiParameter,
+    OpenApiExample,
+    extend_schema_view,
+    OpenApiResponse
+)
 from rest_framework import generics, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -52,6 +59,39 @@ class BorrowingListCreateView(generics.ListCreateAPIView):
 
         return queryset
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="is_active",
+                type=int,
+                location=OpenApiParameter.QUERY,
+                description="Filter by active borrowings",
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="is_active",
+                        value=1
+                    )
+                ],
+            ),
+            OpenApiParameter(
+                name="user_id",
+                type=int,
+                location=OpenApiParameter.QUERY,
+                description="Filter borrowings by their users",
+                required=False,
+                examples=[
+                    OpenApiExample(
+                        name="user_id",
+                        value=7
+                    )
+                ],
+            )
+        ]
+    )
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        return super().get(request, *args, **kwargs)
+
 
 class BorrowingDetailView(generics.RetrieveAPIView):
     queryset = Borrowing.objects.select_related("user", "book")
@@ -59,6 +99,27 @@ class BorrowingDetailView(generics.RetrieveAPIView):
     permission_classes = (IsBorrower,)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        request=None,
+        responses={
+            201: OpenApiResponse(
+                response={"detail": "The book has been returned"},
+                examples=[OpenApiExample(
+                    name="return",
+                    value={"detail": "The book has been returned"}
+                )]
+            ),
+            200: OpenApiResponse(
+                response={"detail": "The book was already returned"},
+                examples=[OpenApiExample(
+                    name="return",
+                    value={"detail": "The book was already returned"},
+                )]
+            )
+        }
+    )
+)
 class BorrowingReturnView(APIView):
     permission_classes = (IsBorrower,)
 

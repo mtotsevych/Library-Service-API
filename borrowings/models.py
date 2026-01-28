@@ -6,7 +6,7 @@ from Library_Service_API import settings
 class Borrowing(models.Model):
     borrow_date = models.DateField()
     expected_return_date = models.DateField()
-    actual_return_date = models.DateField(blank=True)
+    actual_return_date = models.DateField(blank=True, null=True)
     book = models.ForeignKey(
         "books.Book",
         on_delete=models.CASCADE,
